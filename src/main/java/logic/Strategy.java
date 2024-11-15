@@ -18,6 +18,7 @@ public class Strategy {
   // TEMP until base levels in game state is fixed
   static {
     List<BaseLevel> levels = new ArrayList<>();
+    levels.add(new BaseLevel(20, 10, 1));   // Dummy level 0 not upgradeable?
     levels.add(new BaseLevel(20, 10, 1));   // Level 0
     levels.add(new BaseLevel(40, 20, 2));   // Level 1
     levels.add(new BaseLevel(80, 30, 3));   // Level 2
@@ -80,15 +81,17 @@ public class Strategy {
     if (nearerstBase == null) {
       return null;
     }
-//    List<BaseLevel> baseLevels = gameState.config.baseLevels;
-//    if (baseLevels == null || base.level >= baseLevels.size()) { // if base levels is not usable dont upgrade just expand
-//      int travelTimeCost = calculateTravelTimeCost(base.position, nearerstBase.position, gameState.config.paths);
-//
-//      if (base.population >= travelTimeCost) {
-//        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
-//      }
-//      return null;
-//    }
+
+    //List<BaseLevel> baseLevels = gameState.config.baseLevels;
+    // if (baseLevels == null || base.level >= baseLevels.size()) { // if base levels is not usable dont upgrade just expand
+    if (base.level == 0) {
+      int travelTimeCost = calculateTravelTimeCost(base.position, nearerstBase.position, gameState.config.paths);
+
+      if (base.population >= travelTimeCost) {
+        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
+      }
+      return null;
+    }
 
     BaseLevel baseLevel = LEVELS.get(base.level);//baseLevels.get(base.level);
     System.out.println("Current Decision: " + base + " -> " + nearerstBase);

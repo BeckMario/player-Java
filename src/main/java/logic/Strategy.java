@@ -1,53 +1,39 @@
 package logic;
 
-import java.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import models.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import models.Base;
-import models.BaseLevel;
-import models.GameConfig;
-import models.GameState;
-import models.PathConfig;
-import models.PlayerAction;
-import models.Position;
-
 public class Strategy {
 
-  private static final Map<Integer, LevelInfo> LEVEL_MAP;
+  private static final List<BaseLevel> LEVELS;
 
+  // TEMP until base levels in game state is fixed
   static {
-    Map<Integer, LevelInfo> map = new HashMap<>();
-    map.put(0, new LevelInfo(20, 10, 1));
-    map.put(1, new LevelInfo(40, 20, 2));
-    map.put(2, new LevelInfo(80, 30, 3));
-    map.put(3, new LevelInfo(100, 40, 4));
-    map.put(4, new LevelInfo(200, 50, 5));
-    map.put(5, new LevelInfo(300, 100, 6));
-    map.put(6, new LevelInfo(400, 200, 7));
-    map.put(7, new LevelInfo(500, 400, 8));
-    map.put(8, new LevelInfo(600, 600, 9));
-    map.put(9, new LevelInfo(700, 800, 10));
-    map.put(10, new LevelInfo(800, 1000, 15));
-    map.put(11, new LevelInfo(900, 1500, 20));
-    map.put(12, new LevelInfo(1000, 2000, 25));
-    map.put(13, new LevelInfo(2000, 3000, 50));
-    LEVEL_MAP = Collections.unmodifiableMap(map); // Make map immutable
-  }
+    List<BaseLevel> levels = new ArrayList<>();
+    levels.add(new BaseLevel(20, 10, 1));   // Level 0
+    levels.add(new BaseLevel(40, 20, 2));   // Level 1
+    levels.add(new BaseLevel(80, 30, 3));   // Level 2
+    levels.add(new BaseLevel(100, 40, 4));  // Level 3
+    levels.add(new BaseLevel(200, 50, 5));  // Level 4
+    levels.add(new BaseLevel(300, 100, 6)); // Level 5
+    levels.add(new BaseLevel(400, 200, 7)); // Level 6
+    levels.add(new BaseLevel(500, 400, 8)); // Level 7
+    levels.add(new BaseLevel(600, 600, 9)); // Level 8
+    levels.add(new BaseLevel(700, 800, 10));// Level 9
+    levels.add(new BaseLevel(800, 1000, 15));// Level 10
+    levels.add(new BaseLevel(900, 1500, 20));// Level 11
+    levels.add(new BaseLevel(1000, 2000, 25));// Level 12
+    levels.add(new BaseLevel(2000, 3000, 50));// Level 13
 
-  // Tmp base level mapping until game is fixed:
-  static class LevelInfo {
-    int maxPopulation;
-    int upgradeCost;
-    int spawnRate;
-
-    public LevelInfo(int maxPopulation, int upgradeCost, int spawnRate) {
-      this.maxPopulation = maxPopulation;
-      this.upgradeCost = upgradeCost;
-      this.spawnRate = spawnRate;
-    }
+    LEVELS = Collections.unmodifiableList(levels);
   }
 
   public static void printAsJson(Object object) {
@@ -104,9 +90,9 @@ public class Strategy {
 //      return null;
 //    }
 
-   // BaseLevel baseLevel = baseLevels.get(base.level);
+    BaseLevel baseLevel = LEVELS.get(base.level);//baseLevels.get(base.level);
     System.out.println("Current Decision: " + base + " -> " + nearerstBase);
-    int upgradeCost = base.unitsUntilUpgrade != 0 ? base.unitsUntilUpgrade : LEVEL_MAP.get(base.level).upgradeCost;
+    int upgradeCost = base.unitsUntilUpgrade != 0 ? base.unitsUntilUpgrade : baseLevel.upgradeCost;
     int takeoverCost = calculateTakeoverBase(gameState.config, base.position, nearerstBase);
     System.out.println("Upgrade Cost: " + upgradeCost + ", Takeover Cost: " + takeoverCost + ", Population: " + base.population);
     if (upgradeCost < takeoverCost) {
@@ -154,12 +140,12 @@ public class Strategy {
   }
 
   public static int calculatePopulationAfterNRounds(GameConfig gameConfig, Base base, int rounds) {
-//    BaseLevel baseLevel = gameConfig.baseLevels.get(base.level);
-    if (base.population == LEVEL_MAP.get(base.level).maxPopulation) {
+    BaseLevel baseLevel = LEVELS.get(base.level);// gameConfig.baseLevels.get(base.level);
+    if (base.population == baseLevel.maxPopulation) {
       return base.population;
     }
-    int population = base.population + (rounds * LEVEL_MAP.get(base.level).spawnRate);
-    return Math.min(population, LEVEL_MAP.get(base.level).maxPopulation); //TODO: halt durch Vale
+    int population = base.population + (rounds * baseLevel.spawnRate);
+    return Math.min(population, baseLevel.maxPopulation); //TODO: halt durch Vale
   }
 
   public static int calculateTravelTimeCost(Position source, Position destination, PathConfig pathConfig) {

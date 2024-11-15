@@ -63,7 +63,10 @@ public class Strategy {
     }
     List<BaseLevel> baseLevels = gameState.config.baseLevels;
     if (baseLevels == null || base.level >= baseLevels.size()) { // if base levels is not usable dont upgrade just expand
-      return new PlayerAction(base.uid, nearerstBase.uid, base.population);
+      int travelTimeCost = calculateTravelTimeCost(base.position, nearerstBase.position, gameState.config.paths);
+      if (base.population >= travelTimeCost) {
+        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
+      }
     }
 
     BaseLevel baseLevel = baseLevels.get(base.level);

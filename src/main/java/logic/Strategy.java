@@ -67,6 +67,7 @@ public class Strategy {
       if (base.population >= travelTimeCost) {
         return new PlayerAction(base.uid, nearerstBase.uid, base.population);
       }
+      return null;
     }
 
     BaseLevel baseLevel = baseLevels.get(base.level);

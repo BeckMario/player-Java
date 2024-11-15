@@ -3,13 +3,20 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameConfig{
+public class GameConfig {
 
-    public List<BaseLevel> baseLevels =  new ArrayList<>();
-    public PathConfig paths = new PathConfig(0,0);
+  public List<BaseLevel> baseLevels = new ArrayList<>();
+  public PathConfig paths = new PathConfig(0, 0);
 
-    public GameConfig(List<BaseLevel> baseLevels, PathConfig paths){
-        this.baseLevels = baseLevels;
-        this.paths = paths;
-    }
+  public GameConfig(List<BaseLevel> baseLevels, PathConfig paths) {
+    this.baseLevels = baseLevels;
+    this.paths = paths;
+  }
+
+  @Override public String toString() {
+    return "GameConfig{" +
+        "baseLevels=" + baseLevels +
+        ", paths=" + paths +
+        '}';
+  }
 }

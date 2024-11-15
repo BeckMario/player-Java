@@ -14,8 +14,13 @@ import models.Position;
 public class Strategy {
 
   public static List<PlayerAction> decide(GameState gameState) {
+    System.out.println(gameState.toString());
     List<Base> ownBases = calculateOwnBases(gameState);
-    return decideTakeoverOrUpgrade(gameState, ownBases);
+    List<PlayerAction> playerActions = decideTakeoverOrUpgrade(gameState, ownBases);
+    for (PlayerAction playerAction : playerActions) {
+      System.out.println(playerAction.toString());
+    }
+    return playerActions;
   }
 
   public static List<PlayerAction> decideTakeoverOrUpgrade(GameState gameState, List<Base> ownBases) {
@@ -25,8 +30,10 @@ public class Strategy {
       if (nearerstBase == null) {
         continue;
       }
+      System.out.println("Current Decision: " + base.toString() + " -> " + nearerstBase.toString());
       int upgradeCost = base.unitsUntilUpgrade;
       int takeoverCost = calculateTakeoverBase(gameState.config, base.position, nearerstBase);
+      System.out.println("Upgrade Cost: " + upgradeCost + ", Takeover Cost: " + takeoverCost + ", Population: " + base.population);
       if (upgradeCost < takeoverCost) {
         if (base.population >= upgradeCost) {
           playerActions.add(new PlayerAction(base.uid, base.uid, upgradeCost));

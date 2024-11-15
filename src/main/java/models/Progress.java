@@ -1,16 +1,23 @@
 package models;
 
-public class Progress{
+public class Progress {
 
-    public int distance = 0;
-    public int traveled = 0;
+  public int distance = 0;
+  public int traveled = 0;
 
-    public Progress(int distance, int traveled){
-        this.distance = distance;
-        this.traveled = traveled;
-    }
+  public Progress(int distance, int traveled) {
+    this.distance = distance;
+    this.traveled = traveled;
+  }
 
-    public int getDistanceLeft(){
-        return distance - traveled;
-    }
+  public int getDistanceLeft() {
+    return distance - traveled;
+  }
+
+  @Override public String toString() {
+    return "Progress{" +
+        "distance=" + distance +
+        ", traveled=" + traveled +
+        '}';
+  }
 }

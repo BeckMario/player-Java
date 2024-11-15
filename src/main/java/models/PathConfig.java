@@ -1,12 +1,19 @@
 package models;
 
-public class PathConfig{
+public class PathConfig {
 
-    public int gracePeriod = 0;
-    public int deathRate = 0;
+  public int gracePeriod = 0;
+  public int deathRate = 0;
 
-    public PathConfig(int gracePeriod, int deathRate){
-        this.gracePeriod = gracePeriod;
-        this.deathRate = deathRate;
-    }
+  public PathConfig(int gracePeriod, int deathRate) {
+    this.gracePeriod = gracePeriod;
+    this.deathRate = deathRate;
+  }
+
+  @Override public String toString() {
+    return "PathConfig{" +
+        "gracePeriod=" + gracePeriod +
+        ", deathRate=" + deathRate +
+        '}';
+  }
 }

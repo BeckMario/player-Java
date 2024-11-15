@@ -1,7 +1,9 @@
 package logic;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import models.Base;
 import models.BaseLevel;
@@ -24,27 +26,45 @@ public class Strategy {
   }
 
   public static List<PlayerAction> decideTakeoverOrUpgrade(GameState gameState, List<Base> ownBases) {
-    ArrayList<PlayerAction> playerActions = new ArrayList<>();
-    for (Base base : ownBases) {
-      Base nearerstBase = calculateNearerstBase(gameState, base);
-      if (nearerstBase == null) {
-        continue;
+    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+      List<Future<PlayerAction>> futures = ownBases.stream()
+          .map(base -> executor.submit(() -> decideForBase(gameState, base)))
+          .toList();
+
+      return futures.stream()
+          .map(future -> {
+            try {
+              return future.get();
+            } catch (Exception e) {
+              e.printStackTrace();
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
+          .toList();
+    }
+  }
+
+  private static PlayerAction decideForBase(GameState gameState, Base base) {
+    Base nearerstBase = calculateNearerstBase(gameState, base);
+    if (nearerstBase == null) {
+      return null;
+    }
+    BaseLevel baseLevel = gameState.config.baseLevels.get(base.level);
+    System.out.println("Current Decision: " + base.toString() + " -> " + nearerstBase.toString());
+    int upgradeCost = baseLevel.upgradeCost;
+    int takeoverCost = calculateTakeoverBase(gameState.config, base.position, nearerstBase);
+    System.out.println("Upgrade Cost: " + upgradeCost + ", Takeover Cost: " + takeoverCost + ", Population: " + base.population);
+    if (upgradeCost < takeoverCost) {
+      if (base.population >= upgradeCost) {
+        return new PlayerAction(base.uid, base.uid, upgradeCost);
       }
-      System.out.println("Current Decision: " + base.toString() + " -> " + nearerstBase.toString());
-      int upgradeCost = base.unitsUntilUpgrade;
-      int takeoverCost = calculateTakeoverBase(gameState.config, base.position, nearerstBase);
-      System.out.println("Upgrade Cost: " + upgradeCost + ", Takeover Cost: " + takeoverCost + ", Population: " + base.population);
-      if (upgradeCost < takeoverCost) {
-        if (base.population >= upgradeCost) {
-          playerActions.add(new PlayerAction(base.uid, base.uid, upgradeCost));
-        }
-      } else {
-        if (base.population >= takeoverCost) {
-          playerActions.add(new PlayerAction(base.uid, nearerstBase.uid, base.population));
-        }
+    } else {
+      if (base.population >= takeoverCost) {
+        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
       }
     }
-    return playerActions;
+    return null;
   }
 
   public static List<Base> calculateOwnBases(GameState gameState) {
@@ -80,7 +100,7 @@ public class Strategy {
   }
 
   public static int calculatePopulationAfterNRounds(GameConfig gameConfig, Base base, int rounds) {
-    BaseLevel baseLevel = gameConfig.baseLevels.get(base.level - 1);
+    BaseLevel baseLevel = gameConfig.baseLevels.get(base.level);
     if (base.population == baseLevel.maxPopulation) {
       return base.population;
     }

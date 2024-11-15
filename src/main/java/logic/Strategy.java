@@ -82,18 +82,18 @@ public class Strategy {
       return null;
     }
 
-    //List<BaseLevel> baseLevels = gameState.config.baseLevels;
+    List<BaseLevel> baseLevels = gameState.config.baseLevels;
     // if (baseLevels == null || base.level >= baseLevels.size()) { // if base levels is not usable dont upgrade just expand
-    if (base.level == 0) {
-      int travelTimeCost = calculateTravelTimeCost(base.position, nearerstBase.position, gameState.config.paths);
+//    if (base.level == 0) {
+//      int travelTimeCost = calculateTravelTimeCost(base.position, nearerstBase.position, gameState.config.paths);
+//
+//      if (base.population >= travelTimeCost) {
+//        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
+//      }
+//      return null;
+//    }
 
-      if (base.population >= travelTimeCost) {
-        return new PlayerAction(base.uid, nearerstBase.uid, base.population);
-      }
-      return null;
-    }
-
-    BaseLevel baseLevel = LEVELS.get(base.level);//baseLevels.get(base.level);
+    BaseLevel baseLevel = baseLevels == null ? LEVELS.get(base.level) : baseLevels.get(base.level);
     System.out.println("Current Decision: " + base + " -> " + nearerstBase);
     int upgradeCost = base.unitsUntilUpgrade != 0 ? base.unitsUntilUpgrade : baseLevel.upgradeCost;
     int takeoverCost = calculateTakeoverBase(gameState.config, base.position, nearerstBase);
@@ -143,7 +143,7 @@ public class Strategy {
   }
 
   public static int calculatePopulationAfterNRounds(GameConfig gameConfig, Base base, int rounds) {
-    BaseLevel baseLevel = LEVELS.get(base.level);// gameConfig.baseLevels.get(base.level);
+    BaseLevel baseLevel = gameConfig.baseLevels == null ? LEVELS.get(base.level) : gameConfig.baseLevels.get(base.level);
     if (base.population == baseLevel.maxPopulation) {
       return base.population;
     }

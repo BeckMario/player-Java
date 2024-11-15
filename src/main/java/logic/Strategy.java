@@ -13,8 +13,6 @@ import models.Position;
 
 public class Strategy {
 
-  public static final int PLAYER_ID = 1;
-
   public static List<PlayerAction> decide(GameState gameState) {
     List<Base> ownBases = calculateOwnBases(gameState);
     return decideTakeoverOrUpgrade(gameState, ownBases);
@@ -43,14 +41,14 @@ public class Strategy {
   }
 
   public static List<Base> calculateOwnBases(GameState gameState) {
-    return gameState.bases.stream().filter(base -> base.player == PLAYER_ID).toList();
+    return gameState.bases.stream().filter(base -> base.player == gameState.game.player).toList();
   }
 
   public static Base calculateNearerstBase(GameState gameState, Base sourceBase) {
     Base nearestBase = null;
     int minDistance = Integer.MAX_VALUE;
     for (Base base : gameState.bases) {
-      if (base.player == PLAYER_ID) {
+      if (base.player == gameState.game.player) {
         continue;
       }
       int distance = calculateDistance(sourceBase.position, base.position);

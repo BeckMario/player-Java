@@ -2,11 +2,11 @@ package models;
 
 public class Game{
 
-    int uid = 0;
-    int tick = 0; 
-    int playerCount = 0; 
-    int remainingPlayers = 0; 
-    int player = 0;
+    public int uid = 0;
+    public int tick = 0;
+    public int playerCount = 0;
+    public int remainingPlayers = 0;
+    public int player = 0;
 
     public Game(int uid, int tick, int playerCount, int remainingPlayers, int player){
         this.uid = uid;

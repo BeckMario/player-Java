@@ -4,12 +4,12 @@ import java.util.UUID;
 
 public class BoardAction{
 
-    int src = 0;
-    int dest = 0;
-    int amount = 0;
-    UUID uuid = new UUID(0, 0);
-    int player = 0;
-    Progress progress = new Progress(0, 0);
+    public int src = 0;
+    public int dest = 0;
+    public int amount = 0;
+    public UUID uuid = new UUID(0, 0);
+    public int player = 0;
+    public Progress progress = new Progress(0, 0);
 
     public BoardAction(int src, int dest, int amount, UUID uuid, int player, Progress progress){
         this.src = src;

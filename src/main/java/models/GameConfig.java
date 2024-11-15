@@ -5,8 +5,8 @@ import java.util.List;
 
 public class GameConfig{
 
-    List<BaseLevel> baseLevels =  new ArrayList<>();
-    PathConfig paths = new PathConfig(0,0);
+    public List<BaseLevel> baseLevels =  new ArrayList<>();
+    public PathConfig paths = new PathConfig(0,0);
 
     public GameConfig(List<BaseLevel> baseLevels, PathConfig paths){
         this.baseLevels = baseLevels;

@@ -2,12 +2,12 @@ package models;
 
 public class Base{
 
-    Position position = new Position(0, 0, 0);
-    int uid = 0;
-    int player = 0;
-    int population = 0;
-    int level = 0;
-    int unitsUntilUpgrade = 0;
+    public Position position = new Position(0, 0, 0);
+    public int uid = 0;
+    public int player = 0;
+    public int population = 0;
+    public int level = 0;
+    public int unitsUntilUpgrade = 0;
     
     public Base(Position position, int uid, int player, int population, int level, int unitsUntilUpgrade){
         this.position = position;

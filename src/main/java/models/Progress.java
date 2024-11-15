@@ -2,8 +2,8 @@ package models;
 
 public class Progress{
 
-    int distance = 0;
-    int traveled = 0;
+    public int distance = 0;
+    public int traveled = 0;
 
     public Progress(int distance, int traveled){
         this.distance = distance;
